@@ -1,4 +1,4 @@
-import { db, storage, ref, push, remove, onValue, sRef, uploadBytes, getDownloadURL } from "./firebase.js";
+import { db, ref, push, set, remove, onValue } from "./firebase.js";
 
 // Tab Switching
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -10,15 +10,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     });
 });
 
-// SLIDER MANAGER
+// SLIDER MANAGER (USING URL)
 const sliderForm = document.getElementById("slider-form");
 if(sliderForm) {
-    sliderForm.addEventListener("submit", async (e) => {
+    sliderForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const file = document.getElementById("slider-image").files[0];
-        const storageRef = sRef(storage, `sliders/${Date.now()}_${file.name}`);
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
+        const url = document.getElementById("slider-image-url").value;
         push(ref(db, "sliders"), { imageUrl: url });
         sliderForm.reset();
     });
@@ -39,17 +36,14 @@ if(sliderForm) {
     });
 }
 
-// CATEGORY MANAGER
+// CATEGORY MANAGER (USING URL)
 const categoryForm = document.getElementById("category-form");
 const prodCatSelect = document.getElementById("prod-category");
 if(categoryForm) {
-    categoryForm.addEventListener("submit", async (e) => {
+    categoryForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const name = document.getElementById("cat-name").value;
-        const file = document.getElementById("cat-image").files[0];
-        const storageRef = sRef(storage, `categories/${Date.now()}_${file.name}`);
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
+        const url = document.getElementById("cat-image-url").value;
         push(ref(db, "categories"), { name, imageUrl: url });
         categoryForm.reset();
     });
@@ -73,10 +67,10 @@ if(categoryForm) {
     });
 }
 
-// PRODUCT MANAGER
+// PRODUCT MANAGER (USING URL)
 const productForm = document.getElementById("product-form");
 if(productForm) {
-    productForm.addEventListener("submit", async (e) => {
+    productForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const title = document.getElementById("prod-title").value;
         const price = Number(document.getElementById("prod-price").value);
@@ -85,20 +79,15 @@ if(productForm) {
         const stock = Number(document.getElementById("prod-stock").value);
         const cod = document.getElementById("prod-cod").checked;
         
-        const mainFile = document.getElementById("prod-main-image").files[0];
-        const mRef = sRef(storage, `products/${Date.now()}_main_${mainFile.name}`);
-        await uploadBytes(mRef, mainFile);
-        const mainUrl = await getDownloadURL(mRef);
-
-        const galleryFiles = document.getElementById("prod-gallery").files;
+        const mainImage = document.getElementById("prod-main-image-url").value;
+        
+        const galleryRaw = document.getElementById("prod-gallery-urls").value;
         let galleryUrls = [];
-        for(let i=0; i<galleryFiles.length; i++) {
-            const gRef = sRef(storage, `products/${Date.now()}_gal_${galleryFiles[i].name}`);
-            await uploadBytes(gRef, galleryFiles[i]);
-            galleryUrls.push(await getDownloadURL(gRef));
+        if(galleryRaw.trim() !== "") {
+            galleryUrls = galleryRaw.split(",").map(url => url.trim()).filter(url => url !== "");
         }
 
-        push(ref(db, "products"), { title, price, mrp, category, stock, cod, mainImage: mainUrl, gallery: galleryUrls });
+        push(ref(db, "products"), { title, price, mrp, category, stock, cod, mainImage: mainImage, gallery: galleryUrls });
         productForm.reset();
     });
 
@@ -119,7 +108,24 @@ if(productForm) {
     });
 }
 
-// PAYMENT MANAGER
+// PAYMENT MANAGER (METHODS & LINK)
+const paymentLinkForm = document.getElementById("payment-link-form");
+if(paymentLinkForm) {
+    paymentLinkForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const link = document.getElementById("admin-payment-link").value;
+        set(ref(db, "paymentLink"), { url: link }).then(() => {
+            alert("Payment link successfully saved!");
+        });
+    });
+
+    onValue(ref(db, "paymentLink"), snapshot => {
+        if(snapshot.exists()) {
+            document.getElementById("admin-payment-link").value = snapshot.val().url;
+        }
+    });
+}
+
 const paymentForm = document.getElementById("payment-form");
 if(paymentForm) {
     paymentForm.addEventListener("submit", (e) => {
@@ -143,4 +149,4 @@ if(paymentForm) {
             list.appendChild(div);
         });
     });
-}
+    }
