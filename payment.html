@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="gray-bg">
+    <header class="navbar simple-nav">
+        <button onclick="history.back()">⬅</button>
+        <h3>Payments</h3>
+    </header>
+
+    <div class="card payment-methods" id="payment-methods-container">
+        <h3>Select Payment Method</h3>
+        <div class="payment-option">
+            <label><input type="radio" name="payment" value="Cash on Delivery" id="cod-radio" checked> Cash on Delivery</label>
+        </div>
+        <div id="upi-methods"></div>
+    </div>
+
+    <div class="sticky-bottom-bar cart-bottom-bar">
+        <div class="total-price-disp">₹<span id="pay-total">0</span></div>
+        <button id="confirm-order-btn" class="btn-yellow">Pay & Place Order</button>
+    </div>
+
+    <!-- Success Popup -->
+    <div id="success-popup" class="popup-overlay" style="display:none;">
+        <div class="popup-content">
+            <div class="success-icon">✔️</div>
+            <h2>Order Placed!</h2>
+            <p>Your order has been placed successfully.</p>
+        </div>
+    </div>
+
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/payment.js"></script>
+</body>
+</html>
