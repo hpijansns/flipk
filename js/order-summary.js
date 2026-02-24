@@ -33,20 +33,25 @@ ${address.mobile}
 `;
 
 
-/* ITEMS */
+/* RESET */
 
 summaryItems.innerHTML="";
-
 totalMrp = 0;
 totalPrice = 0;
 totalItems = 0;
 
 
+/* ITEMS */
+
 cart.forEach(item=>{
 
-totalMrp += item.mrp * item.qty;
-totalPrice += item.price * item.qty;
-totalItems += item.qty;
+const price = Number(item.price) || 0;
+const mrp = Number(item.mrp) || price;
+const qty = Number(item.qty) || 1;
+
+totalMrp += mrp * qty;
+totalPrice += price * qty;
+totalItems += qty;
 
 summaryItems.innerHTML += `
 
@@ -59,9 +64,9 @@ style="width:70px;height:70px;object-fit:cover">
 
 <div class="prod-title">${item.title}</div>
 
-<div class="prod-price">₹${item.price}</div>
+<div class="prod-price">₹${price}</div>
 
-<div>Qty: ${item.qty}</div>
+<div>Qty: ${qty}</div>
 
 </div>
 
@@ -80,21 +85,23 @@ updateTotals();
 function updateTotals(){
 
 const discount = totalMrp - totalPrice;
-
 const finalTotal = totalPrice - couponDiscount;
 
-document.getElementById("sum-items").innerText = totalItems;
+const itemsEl = document.getElementById("sum-items");
+const mrpEl = document.getElementById("sum-mrp");
+const discEl = document.getElementById("sum-discount");
+const finalEl = document.getElementById("final-total");
+const bottomEl = document.getElementById("bottom-total");
 
-document.getElementById("sum-mrp").innerText = "₹"+totalMrp;
+if(itemsEl) itemsEl.innerText = totalItems;
 
-document.getElementById("sum-discount").innerText =
-"- ₹"+(discount + couponDiscount);
+if(mrpEl) mrpEl.innerText = "₹" + totalMrp;
 
-document.getElementById("final-total").innerText =
-"₹"+finalTotal;
+if(discEl) discEl.innerText = "- ₹" + (discount + couponDiscount);
 
-document.getElementById("bottom-total").innerText =
-finalTotal;
+if(finalEl) finalEl.innerText = "₹" + finalTotal;
+
+if(bottomEl) bottomEl.innerText = finalTotal;
 
 }
 
@@ -102,7 +109,11 @@ finalTotal;
 
 /* APPLY COUPON */
 
-document.getElementById("apply-coupon").onclick = async ()=>{
+const applyBtn = document.getElementById("apply-coupon");
+
+if(applyBtn){
+
+applyBtn.onclick = async ()=>{
 
 const code =
 document.getElementById("coupon-input").value.trim().toUpperCase();
@@ -130,11 +141,11 @@ return;
 }
 
 if(data.discount){
-couponDiscount = data.discount;
+couponDiscount = Number(data.discount);
 }
 
 if(data.percent){
-couponDiscount = Math.floor(totalPrice * data.percent / 100);
+couponDiscount = Math.floor(totalPrice * Number(data.percent) / 100);
 }
 
 document.getElementById("coupon-msg").innerText =
@@ -144,15 +155,17 @@ updateTotals();
 
 };
 
+}
+
 
 
 /* CONTINUE PAYMENT */
 
+if(continuePaymentBtn){
 continuePaymentBtn.onclick = ()=>{
-
 window.location.href="payment.html";
-
 };
+}
 
 
 
