@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <header class="admin-header">
+        <h2>Flipkart Admin</h2>
+        <a href="index.html" class="view-store">View Store</a>
+    </header>
+    
+    <div class="admin-layout">
+        <nav class="sidebar">
+            <button class="tab-btn active" data-target="slider-mgr">Sliders</button>
+            <button class="tab-btn" data-target="category-mgr">Categories</button>
+            <button class="tab-btn" data-target="product-mgr">Products</button>
+            <button class="tab-btn" data-target="payment-mgr">Payments</button>
+            <button class="tab-btn" data-target="orders-mgr">Orders</button>
+        </nav>
+
+        <main class="content">
+            <!-- Slider Manager -->
+            <section id="slider-mgr" class="tab-content active">
+                <h3>Add Slider</h3>
+                <form id="slider-form">
+                    <input type="file" id="slider-image" required>
+                    <button type="submit">Upload Slider</button>
+                </form>
+                <div id="slider-list" class="list-grid"></div>
+            </section>
+
+            <!-- Category Manager -->
+            <section id="category-mgr" class="tab-content">
+                <h3>Add Category</h3>
+                <form id="category-form">
+                    <input type="text" id="cat-name" placeholder="Category Name" required>
+                    <input type="file" id="cat-image" required>
+                    <button type="submit">Add Category</button>
+                </form>
+                <div id="category-list" class="list-grid"></div>
+            </section>
+
+            <!-- Product Manager -->
+            <section id="product-mgr" class="tab-content">
+                <h3>Add Product</h3>
+                <form id="product-form">
+                    <input type="text" id="prod-title" placeholder="Product Title" required>
+                    <input type="number" id="prod-price" placeholder="Selling Price" required>
+                    <input type="number" id="prod-mrp" placeholder="MRP" required>
+                    <select id="prod-category" required><option value="">Select Category</option></select>
+                    <input type="number" id="prod-stock" placeholder="Stock" required>
+                    <label>Main Image:</label>
+                    <input type="file" id="prod-main-image" required>
+                    <label>Gallery Images (Multiple):</label>
+                    <input type="file" id="prod-gallery" multiple>
+                    <label><input type="checkbox" id="prod-cod" checked> Enable Cash on Delivery</label>
+                    <button type="submit">Add Product</button>
+                </form>
+                <div id="product-list" class="list-grid"></div>
+            </section>
+
+            <!-- Payment Settings -->
+            <section id="payment-mgr" class="tab-content">
+                <h3>Add UPI Method</h3>
+                <form id="payment-form">
+                    <input type="text" id="pay-name" placeholder="Method Name (e.g., Google Pay)" required>
+                    <button type="submit">Add Method</button>
+                </form>
+                <div id="payment-list" class="list-grid"></div>
+            </section>
+
+            <!-- Orders Panel -->
+            <section id="orders-mgr" class="tab-content">
+                <h3>Live Orders</h3>
+                <div id="orders-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/admin.js"></script>
+    <script type="module" src="js/orders.js"></script>
+</body>
+</html>
