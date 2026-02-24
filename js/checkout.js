@@ -1,125 +1,84 @@
-import { db, ref, onValue } from "./firebase.js";
+const summaryAddress = document.getElementById("summary-address");
+const summaryItems = document.getElementById("summary-items");
+const continuePaymentBtn = document.getElementById("continue-payment-btn");
 
-const urlParams = new URLSearchParams(window.location.search);
-const productId = urlParams.get("id");
+function renderSummary() {
 
-const detailsDiv = document.getElementById("product-details");
-const addToCartBtn = document.getElementById("add-to-cart-btn");
-const buyNowBtn = document.getElementById("buy-now-btn");
-
-let currentProduct = null;
-
-
-/* CART COUNT */
-
-function updateCartCount() {
+    const address = JSON.parse(localStorage.getItem("userAddress"));
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const total = cart.reduce((sum, item) => sum + item.qty, 0);
 
-    const el = document.getElementById("cart-count");
-    if(el) el.innerText = total;
-}
+    if (!address || cart.length === 0) {
+        window.location.href = "cart.html";
+        return;
+    }
 
-updateCartCount();
+    /* ADDRESS */
 
+    summaryAddress.innerHTML = `
+        <h3>Deliver to:</h3>
+        <b>${address.fullName}</b><br>
+        ${address.house}, ${address.area}<br>
+        ${address.city}, ${address.state} - ${address.pincode}<br>
+        ${address.mobile}
+    `;
 
-/* LOAD PRODUCT */
+    /* ITEMS */
 
-if (productId) {
-    onValue(ref(db, `products/${productId}`), (snapshot) => {
+    let totalMrp = 0;
+    let totalPrice = 0;
+    let totalItems = 0;
 
-        currentProduct = snapshot.val();
-        if (!currentProduct) return;
+    summaryItems.innerHTML = "";
 
-        currentProduct.id = productId;
+    cart.forEach((item) => {
 
-        const discount = Math.round(
-            ((currentProduct.mrp - currentProduct.price) / currentProduct.mrp) * 100
-        );
+        totalMrp += item.mrp * item.qty;
+        totalPrice += item.price * item.qty;
+        totalItems += item.qty;
 
-        let galleryHtml = `
-        <div class="gallery-container">
-            <img src="${currentProduct.mainImage}" class="main-img">
-        `;
+        summaryItems.innerHTML += `
+        <div class="card cart-item" style="border:none;margin:0;box-shadow:none;border-bottom:1px solid #eee;display:flex;gap:10px;padding:10px 0;">
 
-        if (currentProduct.gallery && currentProduct.gallery.length) {
-            currentProduct.gallery.forEach((img) => {
-                galleryHtml += `<img src="${img}" class="thumb">`;
-            });
-        }
+            <img src="${item.image || item.mainImage}" style="width:70px;height:70px;object-fit:cover;">
 
-        galleryHtml += `</div>`;
+            <div>
 
-        let codHtml = currentProduct.cod
-            ? ""
-            : `<div class="cod-msg">Cash on Delivery not available</div>`;
+                <div class="prod-title">${item.title}</div>
 
-        detailsDiv.innerHTML = `
-            ${galleryHtml}
+                <div class="prod-price">₹${item.price}</div>
 
-            <div class="prod-details-sec">
-
-                <h1>${currentProduct.title}</h1>
-
-                <div class="prod-price">₹${currentProduct.price}</div>
-
-                <div class="prod-mrp">
-                    ₹${currentProduct.mrp}
-                    <span class="prod-disc">${discount}% off</span>
-                </div>
-
-                ${codHtml}
+                <div>Qty: ${item.qty}</div>
 
             </div>
+
+        </div>
         `;
     });
+
+    /* SUMMARY */
+
+    const discount = totalMrp - totalPrice;
+
+    document.getElementById("sum-items").innerText = totalItems;
+    document.getElementById("sum-mrp").innerText = "₹" + totalMrp;
+    document.getElementById("sum-price").innerText = "₹" + totalPrice;
+    document.getElementById("sum-discount").innerText = "₹" + discount;
 }
 
 
+/* BUTTON */
 
-/* ADD TO CART */
+if (continuePaymentBtn) {
 
-function addToCart(redirect = false) {
+    continuePaymentBtn.addEventListener("click", () => {
 
-    if (!currentProduct) return;
+        window.location.href = "payment.html";
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    });
 
-    let existing = cart.find((item) => item.id === productId);
-
-    if (existing) {
-        existing.qty += 1;
-    } else {
-
-        cart.push({
-            id: productId,
-            title: currentProduct.title,
-            price: currentProduct.price,
-            mrp: currentProduct.mrp,
-            image: currentProduct.mainImage || "",
-            qty: 1
-        });
-
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    updateCartCount();
-
-    if (redirect) {
-        window.location.href = "cart.html";
-    } else {
-        alert("Added to cart");
-    }
 }
 
 
-/* BUTTON EVENTS */
+/* LOAD */
 
-if (addToCartBtn) {
-    addToCartBtn.addEventListener("click", () => addToCart(false));
-}
-
-if (buyNowBtn) {
-    buyNowBtn.addEventListener("click", () => addToCart(true));
-}
+renderSummary();
