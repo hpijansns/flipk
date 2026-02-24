@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="gray-bg">
+    <header class="navbar simple-nav">
+        <button onclick="history.back()">⬅</button>
+        <h3>Order Summary</h3>
+    </header>
+
+    <div class="card" id="summary-address"></div>
+    <div id="summary-items" class="cart-list"></div>
+
+    <div class="price-details card">
+        <h3>Price Details</h3>
+        <div class="price-row"><span>Price (<span id="sum-items">0</span> items)</span> <span id="sum-mrp">₹0</span></div>
+        <div class="price-row text-green"><span>Discount</span> <span id="sum-discount">- ₹0</span></div>
+        <div class="price-row"><span>Delivery Charges</span> <span class="text-green">Free</span></div>
+        <hr>
+        <div class="price-row total-row"><span>Total Amount</span> <span id="sum-total">₹0</span></div>
+    </div>
+
+    <div class="sticky-bottom-bar cart-bottom-bar">
+        <div class="total-price-disp">₹<span id="bottom-sum-total">0</span></div>
+        <button id="continue-payment-btn" class="btn-yellow">Continue</button>
+    </div>
+
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/checkout.js"></script>
+</body>
+</html>
