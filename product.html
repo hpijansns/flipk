@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="product-page">
+    <header class="navbar simple-nav">
+        <button onclick="history.back()">⬅</button>
+        <a href="cart.html" class="cart-icon">🛒 <span id="cart-count">0</span></a>
+    </header>
+
+    <div id="product-details">
+        <!-- Injected via JS -->
+    </div>
+
+    <div class="sticky-bottom-bar">
+        <button id="add-to-cart-btn" class="btn-white">Add to Cart</button>
+        <button id="buy-now-btn" class="btn-yellow">Buy Now</button>
+    </div>
+
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/product.js"></script>
+</body>
+</html>
