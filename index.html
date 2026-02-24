@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipkart Clone</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-top">
+            <div class="logo">Flipkart</div>
+            <a href="cart.html" class="cart-icon">🛒 <span id="cart-count">0</span></a>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search for products, brands and more">
+        </div>
+    </header>
+
+    <div id="categories-container" class="categories-scroll"></div>
+    <div id="slider-container" class="slider-wrapper"></div>
+    
+    <div class="deals-section">
+        <h2>Top Deals</h2>
+        <div id="product-grid" class="product-grid"></div>
+    </div>
+
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/categories.js"></script>
+    <script type="module" src="js/slider.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
